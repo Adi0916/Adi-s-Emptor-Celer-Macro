@@ -1,4 +1,4 @@
-# GAG Autobuy Macro (v2) – *Celer Emptor*
+# GAG Autobuy Macro (v2) – *Emptor Celer*
 
 ## Overview
 
