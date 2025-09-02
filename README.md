@@ -1,4 +1,4 @@
-# GAG AutoBuy v2.1 (Macro)
+# Emptor v2.1 (Macro)
 
 ## Overview
 
@@ -26,7 +26,7 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/) from the official site.  
 2. Download this repository or clone it.  
-3. Double click the macro file: **`GAG autobuy v2.1.ahk`**  
+3. Double click the macro file: **`Emptor v2.1.ahk`**  
 4. A GUI window will appear where you can configure settings.  
 
 ### You can set:
