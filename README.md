@@ -51,7 +51,7 @@ A tooltip will indicate when the macro is active.
 
 - Turn on **UI navigation** in Roblox settings.  
 - Make sure **UI navigation is disabled in the main game** before starting the macro (`\` toggles it – if enabled, a white highlight appears).  
-- Your inventory must contain **only the wrench** in the 1st slot.  
+- Your inventory must contain **the wrench** in the 1st slot and at least one more item in the hotbar.  
 - Ensure both the **GEAR** and **SEED** shop NPCs are interactable with the **E key**.  
 - Example setup is shown in this video: [https://youtu.be/eqKjukbAhNM](https://youtu.be/eqKjukbAhNM)  
 
