@@ -23,7 +23,7 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/) from the official site.  
 2. Download this repository or clone it.  
-3. Double click the macro file: **`GAG autobuy v2.ahk`**  
+3. Double click the macro file: **`GAG autobuy v1.ahk`**  
 
 ---
 
