@@ -1,4 +1,4 @@
-# Emptor v2.1 (Macro)
+# Emptor v2.2 (Macro)
 
 ## Overview
 
@@ -17,7 +17,8 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 - Configurable confirmations per item  
 - Adjustable speed (Normal / Fast)  
 - Automatic handling of special case in the GEAR shop (16th item)  
-- Randomized input to simulate human-like behavior  
+- Randomized input to simulate human-like behavior
+- Save settings to a file
 - Easy toggle ON/OFF  
 
 ---
@@ -31,7 +32,6 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 ### You can set:
 - **Amount** → number of confirmations for each item  
-- **Custom click (Y)** → the Y coordinate for teleportation to the "GEAR" shop  
 - **Speed**  
   - **Normal** (default) → `RandMinGlobal = 200`, `RandMaxGlobal = 250`  
   - **Fast** → `RandMinGlobal = 100`, `RandMaxGlobal = 150`  
@@ -40,6 +40,7 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 ## Controls
 
+- **F7** → Open GUI to edit data  
 - **F8** → Toggle automation ON/OFF  
 - **Esc** → Exit the macro  
 
