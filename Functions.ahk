@@ -42,11 +42,20 @@ ApplySpeed() {
 }
 
 RandSleep(min := "", max := "") {
-    global RandMin, RandMax
-    if (min = "")
+    global settings, RandMin, RandMax
+
+    if (min = "" || max = "") {
+        if (settings["SpeedMode"] = 0) {
+            RandMin := 200
+            RandMax := 250
+        } else {
+            RandMin := 100
+            RandMax := 150
+        }
         min := RandMin
-    if (max = "")
         max := RandMax
+    }
+
     d := Random(min, max)
     Sleep d
 }
@@ -78,105 +87,6 @@ SmoothClick(x, y) {
     Click "left"
 }
 
-ScrollDownMax(scrolls) {
-    Send "\"
-    RandSleep()
-    Send "\"
-    RandSleep()
-    Tap("Up")
-    RandSleep()
-    count := scrolls + 1
-    Loop count {
-        Tap("Down")
-        RandSleep()
-    }
-}
 
-BuyInShopSEED(items, amount) {
-    if (amount = "" || amount <= 0)
-        amount := 3
 
-    Send "\"
-    RandSleep()
-    Send "\"
-    RandSleep()
-    Tap("Up")
-    RandSleep()
-   
-    Loop items {
-        Tap("Enter")
-        RandSleep()
-        Tap("Down")
-        RandSleep()
-        Tap("Left")
-        RandSleep()
-        Loop amount {
-            Tap("Enter")
-            RandSleep()
-        }
-        Loop 2 {
-            Tap("Up")
-            RandSleep()
-        }
-    }
-}
 
-BuyInShopGEAR(items, amount) {
-    if (amount = "" || amount <= 0)
-        amount := 3
-
-    Send "\"
-    RandSleep()
-    Send "\"
-    RandSleep()
-    Tap("Up")
-    RandSleep()
-
-    Loop items {
-        Tap("Enter")
-        RandSleep()
-        Tap("Down")
-        RandSleep()
-        if (A_Index != 16) {
-            Tap("Left")
-            RandSleep()
-        }
-        Loop amount {
-            Tap("Enter")
-            RandSleep()
-        }
-        Loop 2 {
-            Tap("Up")
-            RandSleep()
-        }
-    }
-
-    Tap("Enter")
-    RandSleep()
-    Send "\"
-    RandSleep(1200, 1800)
-}
-
-TPtoSEEDS() {
-    Send "\"
-    RandSleep()
-    Tap("Up")
-    RandSleep()
-    Tap("Enter")
-    RandSleep(1200, 1800)
-}
-
-TPtoGEARS() {
-    global ScreenHeight
-    Send "1"
-    RandSleep()
-    SmoothClick(0, ScreenHeight/4)
-    RandSleep(900, 1300)
-    Send "e"
-    RandSleep(3000, 3500)
-}
-
-OpenSEEDS() {
-    Send "e"
-    RandSleep(3000, 3500)
-}

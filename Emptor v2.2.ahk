@@ -1,4 +1,6 @@
 ﻿#Include Functions.ahk
+#Include Autobuy.ahk
+;#Include, Aligment.ahk
 #SingleInstance Force
 Persistent
 SendMode "Input"
@@ -79,37 +81,19 @@ ApplySettings() {
 ; --- Hotkeys ---
 F7::OpenGUI()
 
-F8::{
+F8:: {
     global toggle
     toggle := !toggle
+
     if toggle {
-        ToolTip "AUTO-BUY: ON"
+        ToolTip("AUTO-BUY ON")  ; Timer started
         SetTimer AutoBuy, 100
     } else {
-        ToolTip "AUTO-BUY: OFF"
-        SetTimer AutoBuy, 0
-        SetTimer () => ToolTip(), -1000
-    }
+        ToolTip("AUTO-BUY STOPPING")  ; Current run may finish
+        }
 }
+
 
 Esc::ExitApp
 
-; --- Main automation ---
-OpenGUI()
 
-AutoBuy() {
-    global toggle, settings
-
-    SetTimer AutoBuy, 0 
-    Sleep 1000
-    TPtoSEEDS()
-    OpenSEEDS()
-    ScrollDownMax(26)
-    BuyInShopSEED(26, settings["Amount"])
-    TPtoGEARS()
-    ScrollDownMax(18)
-    BuyInShopGEAR(18, settings["Amount"])
-
-    if toggle
-        SetTimer AutoBuy, 3000
-}
