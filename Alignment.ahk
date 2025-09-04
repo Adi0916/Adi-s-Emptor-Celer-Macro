@@ -1,4 +1,4 @@
-﻿#Include Functions.ahk
+#Include Functions.ahk
 
 alignment(settings) {
     ToolTip "Camera alignment"
