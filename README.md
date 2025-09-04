@@ -1,4 +1,4 @@
-# Emptor v2.1 (Macro)
+# Emptor v2.2 (Macro)
 
 ## Overview
 
@@ -17,21 +17,21 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 - Configurable confirmations per item  
 - Adjustable speed (Normal / Fast)  
 - Automatic handling of special case in the GEAR shop (16th item)  
-- Randomized input to simulate human-like behavior  
+- Randomized input to simulate human-like behavior
+- Macro auto loads settings
 - Easy toggle ON/OFF  
 
 ---
 
 ## How to Use
 
-1. Install [AutoHotkey v1.1](https://www.autohotkey.com/) from the official site.  
+1. Install [AutoHotkey v2](https://www.autohotkey.com/) from the official site.  
 2. Download this repository or clone it.  
-3. Double click the macro file: **`Emptor v2.1.ahk`**  
+3. Double click the macro file: **`Emptor v2.2.ahk`**  
 4. A GUI window will appear where you can configure settings.  
 
 ### You can set:
 - **Amount** → number of confirmations for each item  
-- **Custom click (Y)** → the Y coordinate for teleportation to the "GEAR" shop  
 - **Speed**  
   - **Normal** (default) → `RandMinGlobal = 200`, `RandMaxGlobal = 250`  
   - **Fast** → `RandMinGlobal = 100`, `RandMaxGlobal = 150`  
@@ -40,7 +40,8 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 ## Controls
 
-- **F8** → Toggle automation ON/OFF  
+- **F7** → Open GUI menu
+- **F8** → Toggle automation ON/OFF
 - **Esc** → Exit the macro  
 
 A tooltip will indicate when the macro is active.  
