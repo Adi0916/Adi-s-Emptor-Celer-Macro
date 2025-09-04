@@ -79,6 +79,7 @@ characterAlignment() {
 
     Loop 2{
         Tap("Right")
+        Sleep 20
     }
 
     Loop 8 {
