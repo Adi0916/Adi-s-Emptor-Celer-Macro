@@ -1,14 +1,21 @@
 ﻿#Include Functions.ahk
-
+#Include Alignment.ahk
+i := 0
 
 AutoBuy() {
-    global toggle, settings
+    global toggle, settings, i
 
     SetTimer AutoBuy, 0 
     Sleep 1000
 
+    if (i = 0){
+        alignment(settings["AlignmentMode"])
+        i++
+    }
+    
     BuyInShopSEED(26, settings["Amount"])
     BuyInShopGEAR(18, settings["Amount"])
+    BuyInShopEGGS(6, settings["Amount"])
     
     if toggle{
         SetTimer AutoBuy, 3000
@@ -19,12 +26,13 @@ AutoBuy() {
 }
 
 BuyInShopSEED(items, amount) {
+    ToolTip "Buying SEEDS"
+    SetTimer () => ToolTip(), -5000
+
     TPtoSEEDS()
     ScrollDownMax(26)    
 
-    Send "\"
-    RandSleep()
-    Send "\"
+    Tap("\")
     RandSleep()
     Tap("Up")
     RandSleep()
@@ -47,17 +55,19 @@ BuyInShopSEED(items, amount) {
 
     Tap("Enter")
     RandSleep()
-    Send "\"
-    RandSleep(1200, 1800) 
+    Tap("\") 
+    RandSleep(1000, 1200) 
+
 }
 
 BuyInShopGEAR(items, amount) {
+    ToolTip "Buying GEARS"
+    SetTimer () => ToolTip(), -5000
+
     TPtoGEARS()
     ScrollDownMax(18)    
 
-    Send "\"
-    RandSleep()
-    Send "\"
+    Tap("\")
     RandSleep()
     Tap("Up")
     RandSleep()
@@ -83,37 +93,86 @@ BuyInShopGEAR(items, amount) {
 
     Tap("Enter")
     RandSleep()
-    Send "\"
-    RandSleep(1200, 1800)
+    Tap("\") 
+    RandSleep(1000, 1200)
+}
+
+BuyInShopEGGS(items, amount) {
+    ToolTip "Buying EGGS"
+    SetTimer () => ToolTip(), -5000
+
+    Loop 4 { ;go to egg shop
+        Tap("S")
+        Sleep 20
+    }
+    Tap("e")
+    RandSleep(3000, 3500)
+    SafeClickRelative(0.75, 0.38)
+    RandSleep(3000, 3500) ;here egg shop open
+
+    ScrollDownMax(6)
+
+    Tap("\") 
+    RandSleep()
+    Tap("Up")
+    RandSleep()
+    Loop items {
+        Tap("Enter")
+        RandSleep()
+        Tap("Down")
+        RandSleep()
+        Tap("Left")
+        RandSleep()
+        Loop amount {
+            Tap("Enter")
+            RandSleep()
+        }
+        Loop 3 {
+            Tap("Up")
+            RandSleep()
+        }
+    }
+
+    Tap("Left")
+    RandSleep()
+    Tap("Up")
+    RandSleep()
+    Loop 5{
+        Tap("Right")
+        RandSleep()
+    }
+    Tap("Down")
+    RandSleep()
+    Tap("Enter")
+    RandSleep()
+    Tap("\") 
+    RandSleep(1000, 1200)
 }
 
 TPtoSEEDS() {
-    Send "\"
+    Tap("\") 
     RandSleep()
     Tap("Up")
     RandSleep()
     Tap("Enter")
-    RandSleep(1200, 1800)
-    Send "e"
+    RandSleep(1000, 1200)
+    Tap("e") 
     RandSleep(3000, 3500)
+    Tap("\") 
+    RandSleep()
 }
 
 TPtoGEARS() {
-    global ScreenHeight
-    Send "1"
+    Tap("1") 
     RandSleep()
-    SmoothClick(0, ScreenHeight/4)
-    RandSleep(900, 1300)
-    Send "e"
+    SafeClickRelative(0.5, 0.5)
+    RandSleep(1000, 1200)
+    Tap("e") 
     RandSleep(3000, 3500)
-    Send "\"
-    RandSleep()
 }
 
 ScrollDownMax(scrolls) {
-    Send "\"
-    RandSleep()
-    Send "\"
+    Tap("\")
     RandSleep()
     Tap("Up")
     RandSleep()
@@ -122,5 +181,6 @@ ScrollDownMax(scrolls) {
         Tap("Down")
         RandSleep()
     }
+    Tap("\")
+    RandSleep()
 }
-

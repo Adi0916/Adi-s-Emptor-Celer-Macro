@@ -1,6 +1,7 @@
-﻿#Include Functions.ahk
+﻿#Include Alignment.ahk
 #Include Autobuy.ahk
-;#Include, Aligment.ahk
+#Include Functions.ahk
+
 #SingleInstance Force
 Persistent
 SendMode "Input"
@@ -8,23 +9,22 @@ CoordMode "Mouse", "Screen"
 SetKeyDelay 50, 30
 
 global settings := Map()
-
-; --- Default values ---
 settings["Amount"] := 3
 settings["SpeedMode"] := 0
-settings["speedText"] := "NORMAL"
+settings["SpeedText"] := "NORMAL"
+settings["AlignmentMode"] := 1
+settings["AlignmentText"] := "YES"
 
-; --- Auto Load/Save ---
 global settings := LoadSettings()
 SaveSettings(settings)
 
 global GuiOpen := false
 global toggle := false
-global myGui, SpeedButton, AmountEdit
+global myGui
+global guiControls := Map()
 
-; --- GUI ---
 OpenGUI() {
-    global GuiOpen, settings, SpeedButton, myGui, AmountEdit
+    global GuiOpen, settings, myGui, guiControls
     if GuiOpen
         return
 
@@ -32,11 +32,15 @@ OpenGUI() {
     myGui.OnEvent("Close", (*) => CloseGUI())
 
     myGui.Add("Text",, "How much to buy?:")
-    AmountEdit := myGui.Add("Edit", "w20 Number", settings["Amount"])
+    guiControls["AmountEdit"] := myGui.Add("Edit", "w20 Number", settings["Amount"])
 
     myGui.Add("Text",, "Speed:")
-    SpeedButton := myGui.Add("Button", "w60", settings["speedText"])
-    SpeedButton.OnEvent("Click", (*) => ToggleSpeed())
+    guiControls["SpeedButton"] := myGui.Add("Button", "w75", settings["SpeedText"])
+    guiControls["SpeedButton"].OnEvent("Click", (*) => ToggleSpeed())
+
+    myGui.Add("Text",, "Auto-alignment:")
+    guiControls["AlignmentButton"] := myGui.Add("Button", "w40", settings["AlignmentText"])
+    guiControls["AlignmentButton"].OnEvent("Click", (*) => ToggleAutoAlignment())
 
     SaveBtn := myGui.Add("Button", "w90", "Save")
     SaveBtn.OnEvent("Click", (*) => ApplySettings())
@@ -53,24 +57,40 @@ CloseGUI() {
 }
 
 ToggleSpeed() {
-    global settings, SpeedButton
+    global settings, guiControls
 
     if (settings["SpeedMode"] = 0) {
         settings["SpeedMode"] := 1
-        settings["speedText"] := "FAST"
+        settings["SpeedText"] := "FAST #1"
+    } else if (settings["SpeedMode"] = 1) {
+        settings["SpeedMode"] := 2
+        settings["SpeedText"] := "ULTRA #2"
+    } else if (settings["SpeedMode"] = 2) {
+        settings["SpeedMode"] := 3
+        settings["SpeedText"] := "HYPER #3"
+    } else if (settings["SpeedMode"] = 3) {
+        settings["SpeedMode"] := 4
+        settings["SpeedText"] := "INSANE #4"
     } else {
         settings["SpeedMode"] := 0
-        settings["speedText"] := "NORMAL"
+        settings["SpeedText"] := "NORMAL #0"
     }
-    
-    ApplySpeed()
 
-    SpeedButton.Text := settings["speedText"]
+    ApplySpeed()
+    guiControls["SpeedButton"].Text := settings["SpeedText"]
+}
+
+ToggleAutoAlignment() {
+    global settings, guiControls
+    settings["AlignmentMode"] := settings["AlignmentMode"] ? 0 : 1
+    settings["AlignmentText"] := settings["AlignmentMode"] ? "YES" : "NO"
+
+    guiControls["AlignmentButton"].Text := settings["AlignmentText"]
 }
 
 ApplySettings() {
-    global settings, AmountEdit
-    value := AmountEdit.Text
+    global settings, guiControls
+    value := guiControls["AmountEdit"].Text
     if value ~= "^\d+$"
         settings["Amount"] := value
     ToolTip "Settings applied."
@@ -79,21 +99,14 @@ ApplySettings() {
 }
 
 ; --- Hotkeys ---
+F6::ExitApp
+
 F7::OpenGUI()
 
 F8:: {
     global toggle
     toggle := !toggle
-
     if toggle {
-        ToolTip("AUTO-BUY ON")  ; Timer started
         SetTimer AutoBuy, 100
-    } else {
-        ToolTip("AUTO-BUY STOPPING")  ; Current run may finish
-        }
+    } 
 }
-
-
-Esc::ExitApp
-
-

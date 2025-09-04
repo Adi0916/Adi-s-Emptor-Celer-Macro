@@ -2,7 +2,7 @@
 
 ## Overview
 
-This AutoHotkey macro automates buying items in the **SEEDS** and **GEARS** shops in the Roblox game **Grow a Garden**.  
+This AutoHotkey macro automates buying items in the Roblox game **Grow a Garden**.  
 It allows you to configure the number of confirmations per item and choose the automation speed.
 
 ⚠️ **Disclaimer**  
@@ -13,33 +13,26 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 ## Features
 
-- Automates purchases in both SEEDS and GEARS shops  
-- Configurable confirmations per item  
-- Adjustable speed (Normal / Fast)  
+- Automates purchases of SEEDS, GEARS, EGGS   
+- Configurable number of bought items  
+- Adjustable speed (Normal / Fast / Hyper / Insane)  
 - Automatic handling of special case in the GEAR shop (16th item)  
 - Randomized input to simulate human-like behavior
+- Auto alignment
 - Macro auto loads settings
 - Easy toggle ON/OFF  
 
 ---
 
-## How to Use
+## How to Install
 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/) from the official site.  
-2. Download this repository or clone it.  
-3. Double click the macro file: **`Emptor v2.2.ahk`**  
-4. A GUI window will appear where you can configure settings.  
-
-### You can set:
-- **Amount** → number of confirmations for each item  
-- **Speed**  
-  - **Normal** (default) → `RandMinGlobal = 200`, `RandMaxGlobal = 250`  
-  - **Fast** → `RandMinGlobal = 100`, `RandMaxGlobal = 150`  
-
----
+2. Download this repository or clone it (you can also go to releases and download it from there) 
+3. Double click the macro file: **`Emptor v3.ahk`**  
 
 ## Controls
 
+- **F6** → Closes the macro, useful for emergencies
 - **F7** → Open GUI menu
 - **F8** → Toggle automation ON/OFF
 - **Esc** → Exit the macro  
@@ -53,8 +46,9 @@ A tooltip will indicate when the macro is active.
 - Turn on **UI navigation** in Roblox settings.  
 - Make sure **UI navigation is disabled in the main game** before starting the macro (`\` toggles it – if enabled, a white highlight appears).  
 - Your inventory must contain **the wrench** in the 1st slot and other slots from 2-0 (2,3,4,5,6,7,8,9,0) has to have an item.
-- Ensure both the **GEAR** and **SEED** shop NPCs are interactable with the **E key**.  
-- Example setup is shown in this video: [https://youtu.be/eqKjukbAhNM](https://youtu.be/eqKjukbAhNM) (hotbar is outdated)
+- Make sure that your "Camera Mode" in the settings is set to "Default (Classic)"
+- Turn ON the auto-alignment in the GUI
+- Example setup is shown in this video: (this sunday)
 
 ---
 

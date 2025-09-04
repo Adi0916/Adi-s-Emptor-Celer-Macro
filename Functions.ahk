@@ -1,8 +1,4 @@
-﻿; Pobranie rozdzielczości ekranu
-ScreenWidth := SysGet(78)
-ScreenHeight := SysGet(79)
-
-SaveSettings(settings) {
+﻿SaveSettings(settings) {
     file := FileOpen("settings.txt", "w", "UTF-8")  ; tryb w = nadpisanie
     for key, value in settings {
         file.WriteLine(key "=" value)
@@ -31,34 +27,36 @@ LoadSettings() {
 }
 
 ApplySpeed() {
-    global RandMin, RandMax
+    global RandMin, RandMax, settings
     if (settings["SpeedMode"] = 0) {
         RandMin := 200
         RandMax := 250
-    } else {
+    } else if (settings["SpeedMode"] = 1) {
         RandMin := 100
         RandMax := 150
-    }
+    } else if (settings["SpeedMode"] = 2) {
+        RandMin := 50
+        RandMax := 75
+    } else if (settings["SpeedMode"] = 3) {
+        RandMin := 20
+        RandMax := 40
+    } else if (settings["SpeedMode"] = 4) {
+        RandMin := 10
+        RandMax := 20
+    } 
 }
 
 RandSleep(min := "", max := "") {
-    global settings, RandMin, RandMax
+    ApplySpeed()
+    global RandMin, RandMax
 
     if (min = "" || max = "") {
-        if (settings["SpeedMode"] = 0) {
-            RandMin := 200
-            RandMax := 250
-        } else {
-            RandMin := 100
-            RandMax := 150
-        }
         min := RandMin
         max := RandMax
     }
-
-    d := Random(min, max)
-    Sleep d
+    Sleep Random(min, max)
 }
+
 
 Tap(key, hold := 40) {
     SendEvent "{" key " down}"
@@ -66,27 +64,74 @@ Tap(key, hold := 40) {
     SendEvent "{" key " up}"
 }
 
-SmoothMove(x, y, speed := 20) {
-    MouseGetPos &x0, &y0
-    dx := x - x0
-    dy := y - y0
-    steps := speed
+SafeMoveRelative(xRatio, yRatio, steps := 20) {
+    hwnd := WinExist("ahk_exe RobloxPlayerBeta.exe")
+    if !hwnd
+        return
+
+    x := 0, y := 0, w := 0, h := 0
+    WinGetPos(&x, &y, &w, &h, "ahk_id " hwnd)
+
+    targetX := x + Round(xRatio * w)
+    targetY := y + Round(yRatio * h)
+
+    MouseGetPos &curX, &curY
+
     Loop steps {
-        nx := x0 + (dx * A_Index / steps)
-        ny := y0 + (dy * A_Index / steps)
-        MouseMove nx, ny, 0
-        delay := Random(10, 30)
-        Sleep delay
+        t := A_Index / steps
+        moveX := curX + Round((targetX - curX) * t)
+        moveY := curY + Round((targetY - curY) * t)
+        MouseMove moveX, moveY, 0
+        Sleep 20
     }
-}
 
-SmoothClick(x, y) {
-    SmoothMove(x, y, 30)
-    delay := Random(80, 150)
-    Sleep delay
-    Click "left"
+    MouseMove targetX, targetY
 }
 
 
 
+SafeClickRelative(xRatio, yRatio) {
+    hwnd := WinExist("ahk_exe RobloxPlayerBeta.exe")
+    if !hwnd
+        return
 
+    x := 0, y := 0, w := 0, h := 0
+    WinGetPos(&x, &y, &w, &h, "ahk_id " hwnd)
+
+    clickX := x + Round(xRatio * w)
+    clickY := y + Round(yRatio * h)
+
+    SafeMoveRelative(xRatio, yRatio)
+    RandSleep()
+    Click
+    RandSleep()
+}
+
+
+
+
+
+
+getMouseCoord(axis) {
+    win := WinGetPos(, , , , "ahk_exe RobloxPlayerBeta.exe")
+    if (win = "")
+        return ""
+
+    winX := win.X
+    winY := win.Y
+    winW := win.W
+    winH := win.H
+
+    CoordMode("Mouse", "Screen")
+    mouse := MouseGetPos()
+
+    relX := (mouse.X - winX) / winW
+    relY := (mouse.Y - winY) / winH
+
+    if (axis = "x")
+        return relX
+    else if (axis = "y")
+        return relY
+
+    return ""
+}
