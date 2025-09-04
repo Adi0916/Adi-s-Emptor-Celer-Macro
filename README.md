@@ -28,7 +28,7 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/) from the official site.  
 2. Download this repository or clone it (you can also go to releases and download it from there) 
-3. Double click the macro file: **`Emptor v3.ahk`**  
+3. Double click the macro file: **`Emptor.ahk`**  
 
 ## Controls
 
