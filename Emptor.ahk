@@ -73,7 +73,7 @@ OpenGUI() {
     }
 
     ; --- RIGHT PANEL: ustawienia ---
-    labelX := 600, ctrlY := y
+    labelX := 620, ctrlY := y
     spacingRight := 50
 
     myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Amount to buy?:")
@@ -98,7 +98,7 @@ OpenGUI() {
     SaveBtn := myGui.Add("Button", Format("x{} y{} w100", labelX, ctrlY), "Save")
     SaveBtn.OnEvent("Click", ApplySettings)
 
-    myGui.Show("w800 h450")  ; Zwiększono rozmiar GUI
+    myGui.Show("w740 h450")  ; Zwiększono rozmiar GUI
     GuiOpen := true
 }
 
