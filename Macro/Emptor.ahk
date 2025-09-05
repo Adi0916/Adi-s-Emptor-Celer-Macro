@@ -6,7 +6,6 @@
 Persistent
 SendMode "Input"
 CoordMode "Mouse", "Screen"
-;SetitemTextDelay 50, 30
 
 CreateDefaultSettings()
 

@@ -4,55 +4,51 @@ alignment(settings) {
     ToolTip "Camera alignment"
 
     SafeClickRelative(0.5, 0.5)
-    RandSleep()
+    RandSleep(100,150)
 
     if (settings = 1) {
         cameraChange()
-        RandSleep()
+        RandSleep(100,150)
         zoomAlignment()
-        RandSleep()
+        RandSleep(100,150)
         cameraAlignment()
-        RandSleep()
+        RandSleep(100,150)
         characterAlignment()
-        RandSleep()
+        RandSleep(100,150)
         cameraChange()
         RandSleep(1000,1300)
-    } else {
-        zoomAlignment()
-        RandSleep(1000,1300)
-    }
-
+    } 
 }
 
 cameraChange() {
     Tap("Escape")
-    RandSleep()
+    RandSleep(100,150)
     Tap("Tab")
-    RandSleep()
+    RandSleep(100,150)
     Tap("Down")
-    RandSleep()
+    RandSleep(100,150)
     Loop 2{
         Tap("Right")
-        RandSleep()
+        RandSleep(100,150)
     }
     Tap("Escape")
-    RandSleep()
+    RandSleep(100,150)
 }
 
 cameraAlignment() {
     Click "Right Down"
-    RandSleep()
+    RandSleep(100,150)
     SafeMoveRelative(0.5, 0.5)
-    RandSleep()
+    RandSleep(100,150)
     MouseMove 0, 800, 0, "R"
-    RandSleep()
+    RandSleep(100,150)
     Click "Right Up"
 }
 
 zoomAlignment() {
     global midX, midY
     SafeMoveRelative(0.5, 0.5)
-    RandSleep()
+    RandSleep(100,150)
 
     Loop 40 {
         Tap("WheelUp")
@@ -72,10 +68,10 @@ zoomAlignment() {
 
 characterAlignment() {
     Tap("\")
-    RandSleep()
+    RandSleep(100,150)
 
     Tap("Up")
-    RandSleep()
+    RandSleep(100,150)
 
     Loop 2{
         Tap("Right")
@@ -97,6 +93,6 @@ characterAlignment() {
         Sleep 20
     }
 
-    RandSleep()
+    RandSleep(100,150)
     Tap("\")
 }

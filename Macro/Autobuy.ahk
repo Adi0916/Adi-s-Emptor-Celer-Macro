@@ -4,25 +4,70 @@ i := 0
 
 AutoBuy() {
     global toggle, settings, i
+    seedItems := items.Has("SEEDS") ? items["SEEDS"] : []
+    gearItems := items.Has("GEARS") ? items["GEARS"] : []
+    eggItems := items.Has("EGGS") ? items["EGGS"] : []
 
-    SetTimer AutoBuy, 0 
+    SetTimer AutoBuy, 0
     Sleep 1000
 
-    if (i = 0){
+    if (i = 0) {
         alignment(settings["AlignmentMode"])
         i++
     }
     
-    BuyInShopSEED(settings["Amount"])
-    BuyInShopGEAR(settings["Amount"])
-    BuyInShopEGGS(settings["Amount"])
+    ; Sprawdź czy którykolwiek z seedItems ma wartość 1
+    anySeed := false
+    for item in seedItems {
+        if (settings[item] = 1) {
+            anySeed := true
+            break
+        }
+    }
     
-    if toggle{
+    if (anySeed) {
+        BuyInShopSEED(settings["Amount"])
+    }
+
+    GearsOccured := false
+    ; Sprawdź czy którykolwiek z gearItems ma wartość 1
+    for item in gearItems {
+        if (settings[item] = 1) {
+            BuyInShopGEAR(settings["Amount"])
+            GearsOccured := true
+            break
+        }
+    }
+
+    ; Sprawdź czy którykolwiek z eggItems ma wartość 1
+    anyEgg := false
+    for item in eggItems {
+        if (settings[item] = 1) {
+            anyEgg := true
+            break
+        }
+    }
+
+    if (anyEgg && !GearsOccured) {
+        TPtoEGGS()
+        BuyInShopEGGS(settings["Amount"])
+    }
+    
+    if (anyEgg && GearsOccured) {
+        GOtoEGGS()
+        BuyInShopEGGS(settings["Amount"])
+    }
+
+    if (settings["Buy All"] = 1) {
+        TPtoCOSMETICS()
+        BuyInShopCOSMETICS(settings["Amount"])
+    }
+    
+    if (toggle) {
         SetTimer AutoBuy, 3000
     } else {
         ToolTip()
     }
-        
 }
 
 BuyInShopSEED(amount) {
@@ -38,7 +83,6 @@ BuyInShopSEED(amount) {
     }
     
     ToolTip "Buying SEEDS"
-    SetTimer () => ToolTip(), -5000
 
     TPtoSEEDS()
     ScrollDownMax(26)    
@@ -48,6 +92,13 @@ BuyInShopSEED(amount) {
     Tap("Up")
     RandSleep()
 
+    itemsToBuy := 0
+    for index, Name in reversedSeeds {
+        if (settings[Name] = 1) {
+            itemsToBuy++
+        }
+    }
+    
     for index, Name in reversedSeeds{
         if (settings[Name] = 1){
             Tap("Enter")
@@ -60,10 +111,21 @@ BuyInShopSEED(amount) {
                 Tap("Enter")
                 RandSleep()
             }
-            Loop 2 {
+            
+            if (itemsToBuy = 1) {
                 Tap("Up")
                 RandSleep()
+                Tap("Enter")
+                RandSleep()
+                Tap("Up")
+                RandSleep()    
+            } else{
+                Loop 2 {
+                    Tap("Up")
+                    RandSleep()
+                }
             }
+
         } else {
             Tap("Up")
             RandSleep()
@@ -74,7 +136,7 @@ BuyInShopSEED(amount) {
     RandSleep()
     Tap("\") 
     RandSleep(1000, 1200) 
-
+    Tooltip()
 }
 
 BuyInShopGEAR(amount) {
@@ -90,7 +152,6 @@ BuyInShopGEAR(amount) {
     }
     
     ToolTip "Buying GEARS"
-    SetTimer () => ToolTip(), -5000
 
     TPtoGEARS()
     ScrollDownMax(18)    
@@ -99,6 +160,13 @@ BuyInShopGEAR(amount) {
     RandSleep()
     Tap("Up")
     RandSleep()
+
+    itemsToBuy := 0
+    for index, Name in reversedGears {
+        if (settings[Name] = 1) {
+            itemsToBuy++
+        }
+    }
 
     for index, Name in reversedGears{
         if (settings[Name] = 1){
@@ -114,10 +182,21 @@ BuyInShopGEAR(amount) {
                 Tap("Enter")
                 RandSleep()
             }
-            Loop 2 {
+            
+            if (itemsToBuy = 1) {
                 Tap("Up")
                 RandSleep()
+                Tap("Enter")
+                RandSleep()
+                Tap("Up")
+                RandSleep()    
+            } else{
+                Loop 2 {
+                    Tap("Up")
+                    RandSleep()
+                }
             }
+
         } else {
             Tap("Up")
             RandSleep()
@@ -129,6 +208,7 @@ BuyInShopGEAR(amount) {
     RandSleep()
     Tap("\") 
     RandSleep(1000, 1200)
+    Tooltip()
 }
 
 BuyInShopEGGS(amount) {
@@ -144,9 +224,6 @@ BuyInShopEGGS(amount) {
     }
     
     ToolTip "Buying EGGS"
-    SetTimer () => ToolTip(), -5000
-
-    GOtoEGGS()
 
     ScrollDownMax(6)
 
@@ -154,6 +231,13 @@ BuyInShopEGGS(amount) {
     RandSleep()
     Tap("Up")
     RandSleep()
+
+    itemsToBuy := 0
+    for index, Name in reversedEggs {
+        if (settings[Name] = 1) {
+            itemsToBuy++
+        }
+    }
 
     for index, Name in reversedEggs {
         if (settings[Name] = 1){
@@ -167,10 +251,23 @@ BuyInShopEGGS(amount) {
                 Tap("Enter")
                 RandSleep()
             }
-            Loop 3 {
+            
+            if (itemsToBuy = 1) {
                 Tap("Up")
                 RandSleep()
+                Tap("Enter")
+                RandSleep()
+                Loop 2 {
+                    Tap("Up")
+                    RandSleep()  
+                }
+            } else{
+                Loop 3 {
+                    Tap("Up")
+                    RandSleep()
+                }
             }
+
         } else {
             Loop 2 {
                 Tap("Up")
@@ -178,21 +275,62 @@ BuyInShopEGGS(amount) {
             }
         }
     }
-        
-    Tap("Left")
-    RandSleep()
-    Tap("Up")
-    RandSleep()
-    Loop 5{
+    
+    Loop 2{
         Tap("Right")
         RandSleep()
-    }
+    }    
     Tap("Down")
     RandSleep()
     Tap("Enter")
     RandSleep()
     Tap("\") 
     RandSleep(1000, 1200)
+    Tooltip()
+}
+
+BuyInShopCOSMETICS(amount){
+    global settings
+    
+    ToolTip "Buying COSMETICS"
+
+    Loop amount{
+        SafeClickRelative(0.2,0.58)
+        RandSleep()
+        SafeClickRelative(0.45,0.58)
+        RandSleep()
+        SafeClickRelative(0.67,0.58)
+        RandSleep()
+        SafeClickRelative(0.23,0.77)
+        RandSleep()
+        SafeClickRelative(0.33,0.77)
+        RandSleep()
+        SafeClickRelative(0.43,0.77)
+        RandSleep()
+        SafeClickRelative(0.53,0.77)
+        RandSleep()
+        SafeClickRelative(0.67,0.77)
+        RandSleep()
+        SafeClickRelative(0.75,0.77)
+        RandSleep()
+    }
+
+    Tap("\") 
+    RandSleep()       
+    Tap("Left")
+    RandSleep()
+    Tap("Up")
+    RandSleep() 
+    Loop 6{
+        Tap("Right")
+        RandSleep() 
+    }
+    Tap("Enter")
+    RandSleep()
+    Tap("\") 
+    RandSleep(1000, 1200)
+    Tooltip()
+    
 }
 
 TPtoSEEDS() {
@@ -212,7 +350,7 @@ TPtoGEARS() {
     Tap("1") 
     RandSleep()
     SafeClickRelative(0.5, 0.5)
-    RandSleep(1000, 1200)
+    RandSleep(1500, 2750)
     Tap("e") 
     RandSleep(3000, 3500)
 }
@@ -226,13 +364,34 @@ TPtoEGGS() {
 }
 
 GOtoEGGS() {
-    Loop 4 {
+    RandSleep(100,200)
+    Loop 10 {
         Tap("S")
         Sleep 20
     }
+    RandSleep(100,200)
     Tap("e")
     RandSleep(3000, 3500)
     SafeClickRelative(0.75, 0.38)
+    RandSleep(3000, 3500)
+}
+
+TPtoCOSMETICS(){
+    Tap("1") 
+    RandSleep()
+    SafeClickRelative(0.5, 0.5)
+    RandSleep(1000, 1200)
+    GOtoCOSMETICS()
+}
+
+GOtoCOSMETICS() {
+    RandSleep(100,200)
+    Loop 7 {
+        Tap("W")
+        Sleep 20
+    }
+    RandSleep(100,200)
+    Tap("e")
     RandSleep(3000, 3500)
 }
 

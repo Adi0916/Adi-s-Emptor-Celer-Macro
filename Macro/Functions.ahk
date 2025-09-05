@@ -68,7 +68,7 @@ CreateDefaultItemsFile() {
 SEEDS: Carrot, Strawberry, Blueberry, Orange Tulip, Tomato, Corn, Daffodil, Watermelon, Pumpkin, Apple, Bamboo, Coconut, Cactus, Dragon Fruit, Mango, Grape, Mushroom, Pepper, Cacao, Beanstalk, Ember Lily, Sugar Apple, Burning Bud, Giant Pinecone, Elder Strawberry, Romanesco
 GEARS: Watering can, Trading Ticket, Trowel, Recall Wrench, Basic Sprinkler, Advanced Sprinkler, Medium Toy, Medium Treat, Godly Sprinkler, Magnifying Glass, Master Sprinkler, Cleaning Spray, Cleansing Pet Shard, Favorite Tool, Harvest Tool, Friendship Pot, Grandmaster Sprinkler, Levelup Lollipop
 EGGS: Common, Uncommon, Rare, Legendary, Mythical, Bug
-COSMETICS: Top, Bottom
+COSMETICS: Buy All
 )"
 
     FileAppend(defaultItems, "items.txt", "UTF-8")
@@ -161,7 +161,7 @@ SafeMoveRelative(xRatio, yRatio, steps := 20) {
         moveX := curX + Round((targetX - curX) * t)
         moveY := curY + Round((targetY - curY) * t)
         MouseMove moveX, moveY, 0
-        Sleep 20
+        Sleep 10 + Random(0,10)
     }
 
     MouseMove targetX, targetY
