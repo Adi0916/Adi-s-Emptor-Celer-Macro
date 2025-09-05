@@ -20,6 +20,7 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 - Randomized input to simulate human-like behavior
 - Auto alignment
 - Macro auto loads settings
+- Select items to buy from the shop (alpha)
 - Easy toggle ON/OFF  
 
 ---
