@@ -26,6 +26,54 @@ LoadSettings() {
     return settings
 }
 
+LoadItems() {
+    items := Map()
+    if !FileExist("items.txt")
+        return items
+
+    content := FileRead("items.txt", "UTF-8")
+    lines := StrSplit(content, "`n")  ; dzielimy po nowych liniach
+
+    for _, line in lines {
+        line := Trim(line)
+        if line = ""
+            continue
+        parts := StrSplit(line, ":")
+        if parts.Length < 2
+            continue
+        
+        ; Usuń tylko pierwsze i końcowe spacje (Trim), ale zachowuj spacje wewnątrz
+        cat := Trim(parts[1])
+        objList := StrSplit(Trim(parts[2]), ",")
+        
+        ; Oczyść każdy przedmiot - usuń tylko pierwsze i końcowe spacje
+        cleanedObjList := []
+        for _, item in objList {
+            cleanedItem := Trim(item)  ; tylko Trim, bez usuwania wszystkich spacji
+            if cleanedItem != ""  ; dodaj tylko niepuste elementy
+                cleanedObjList.Push(cleanedItem)
+        }
+        
+        items[cat] := cleanedObjList
+    }
+    return items
+}
+
+CreateDefaultItemsFile() {
+    if FileExist("items.txt")
+        return
+
+    defaultItems := "
+(
+SEEDS: Carrot, Strawberry, Blueberry, Orange Tulip, Tomato, Corn, Daffodil, Watermelon, Pumpkin, Apple, Bamboo, Coconut, Cactus, Dragon Fruit, Mango, Grape, Mushroom, Pepper, Cacao, Beanstalk, Ember Lily, Sugar Apple, Burning Bud, Giant Pinecone, Elder Strawberry, Romanesco
+GEARS: Watering can, Trading Ticket, Trowel, Recall Wrench, Basic Sprinkler, Advanced Sprinkler, Medium Toy, Medium Treat, Godly Sprinkler, Magnifying Glass, Master Sprinkler, Cleaning Spray, Cleansing Pet Shard, Favorite Tool, Harvest Tool, Friendship Pot, Grandmaster Sprinkler, Levelup Lollipop
+EGGS: Common, Uncommon, Rare, Legendary, Mythical, Bug
+COSMETICS: Top, Bottom
+)"
+
+    FileAppend(defaultItems, "items.txt", "UTF-8")
+}
+
 ApplySpeed() {
     global RandMin, RandMax, settings
     if (settings["SpeedMode"] = 0) {

@@ -8,87 +8,161 @@ SendMode "Input"
 CoordMode "Mouse", "Screen"
 SetKeyDelay 50, 30
 
+; --- Ustawienia podstawowe ---
 global settings := Map()
 settings["Amount"] := 3
 settings["SpeedMode"] := 0
 settings["SpeedText"] := "NORMAL"
 settings["AlignmentMode"] := 1
 settings["AlignmentText"] := "YES"
+settings["AutoGuiMode"] := 1
+settings["AutoGuiText"] := "YES"
+
+CreateDefaultItemsFile()
+global items := LoadItems()
+
+for cat, objList in items {
+    for _, itemText in objList {
+        key := itemText . "Mode"
+        if !settings.Has(key)
+            settings[key] := 0
+    }
+}
 
 global settings := LoadSettings()
 SaveSettings(settings)
 
+; --- GUI ---
 global GuiOpen := false
 global toggle := false
 global myGui
 global guiControls := Map()
 
+if (settings["AutoGuiMode"] = 1)
+    OpenGUI()
+
 OpenGUI() {
     global GuiOpen, settings, myGui, guiControls
+    global items := LoadItems()
     if GuiOpen
         return
 
     myGui := Gui("+AlwaysOnTop +ToolWindow +Border", "Script settings")
-    myGui.OnEvent("Close", (*) => CloseGUI())
+    myGui.OnEvent("Close", CloseGUI)
 
-    myGui.Add("Text",, "How much to buy?:")
-    guiControls["AmountEdit"] := myGui.Add("Edit", "w20 Number", settings["Amount"])
+    ; --- LEFT PANEL: Kategorie i przedmioty ---
+    x := 20, y := 20
+    spacingX := 120, spacingY := 12
+    btnSize := 10
+    textWidth := 100  ; szerokość dla nazwy przedmiotu
 
-    myGui.Add("Text",, "Speed:")
-    guiControls["SpeedButton"] := myGui.Add("Button", "w75", settings["SpeedText"])
-    guiControls["SpeedButton"].OnEvent("Click", (*) => ToggleSpeed())
+    guiControls := Map()
+    guiControls["ItemButtons"] := []
 
-    myGui.Add("Text",, "Auto-alignment:")
-    guiControls["AlignmentButton"] := myGui.Add("Button", "w40", settings["AlignmentText"])
-    guiControls["AlignmentButton"].OnEvent("Click", (*) => ToggleAutoAlignment())
+    ; Ustalona kolejność kategorii
+    categories := ["SEEDS", "GEARS", "EGGS", "COSMETICS"]
 
-    SaveBtn := myGui.Add("Button", "w90", "Save")
-    SaveBtn.OnEvent("Click", (*) => ApplySettings())
+    idCounter := 1  ; unikalne ID dla każdego guzika
+    for i, cat in categories {
+        objList := items[cat]  ; pobierz przedmioty z mapy wg nazwy kategorii
+        colX := x + spacingX*(i-1)
+        myGui.Add("Text", Format("x{} y{}", colX, y), cat)
 
-    myGui.Show()
+        itemStartY := y + 25
+        for j, itemText in objList {
+            ; Dodaj nazwę przedmiotu
+            itemTextCtrl := myGui.Add("Text", Format("x{} y{} w{}", colX, itemStartY + spacingY*(j-1), textWidth), itemText)
+            itemTextCtrl.SetFont("s7")
+            ; Dodaj przycisk obok nazwy
+            btn := myGui.Add("Button", Format("x{} y{} w{} h{}", colX + textWidth - 5, itemStartY + spacingY*(j-1), btnSize, btnSize), "")
+            key := itemText . "Mode"
+
+            ; ustaw początkowy stan guzika
+            btn.Text := settings[key] ? "X" : ""
+
+            ; callback dla każdego guzika
+            btn.OnEvent("Click", ToggleItemMode.Bind(btn, key))
+
+            guiControls["ItemButtons"].Push(btn)
+            idCounter++
+        }
+    }
+
+    ; --- RIGHT PANEL: ustawienia ---
+    labelX := 550, ctrlY := y
+    spacingRight := 50
+
+    myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Amount to buy?:")
+    guiControls["AmountEdit"] := myGui.Add("Edit", Format("x{} y{} w20 Number", labelX, ctrlY + 20), settings["Amount"])
+    ctrlY += spacingRight
+
+    myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Speed:")
+    guiControls["SpeedButton"] := myGui.Add("Button", Format("x{} y{} w75", labelX, ctrlY + 20), settings["SpeedText"])
+    guiControls["SpeedButton"].OnEvent("Click", ToggleSpeed)
+    ctrlY += spacingRight
+
+    myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Auto-alignment:")
+    guiControls["AlignmentButton"] := myGui.Add("Button", Format("x{} y{} w40", labelX, ctrlY + 20), settings["AlignmentText"])
+    guiControls["AlignmentButton"].OnEvent("Click", ToggleAutoAlignment)
+    ctrlY += spacingRight
+
+    myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Auto-open GUI:")
+    guiControls["AutoGuiButton"] := myGui.Add("Button", Format("x{} y{} w40", labelX, ctrlY + 20), settings["AutoGuiText"])
+    guiControls["AutoGuiButton"].OnEvent("Click", ToggleAutoGui)
+    ctrlY += spacingRight
+
+    SaveBtn := myGui.Add("Button", Format("x{} y{} w75", labelX, ctrlY), "Save")
+    SaveBtn.OnEvent("Click", ApplySettings)
+
+    myGui.Show("w700 h400")
     GuiOpen := true
 }
 
-CloseGUI() {
+ToggleItemMode(btn, key, *) {
+    global settings
+    settings[key] := !settings[key]  ; przełączamy 0 <-> 1
+    btn.Text := settings[key] ? "X" : ""
+}
+
+CloseGUI(*) {
     global GuiOpen, myGui
-    if myGui
-        myGui.Destroy()
+    myGui.Destroy()
     GuiOpen := false
 }
 
-ToggleSpeed() {
+ToggleSpeed(*) {
     global settings, guiControls
-
+    ; zmiana trybu prędkości
     if (settings["SpeedMode"] = 0) {
-        settings["SpeedMode"] := 1
-        settings["SpeedText"] := "FAST #1"
+        settings["SpeedMode"] := 1, settings["SpeedText"] := "FAST #1"
     } else if (settings["SpeedMode"] = 1) {
-        settings["SpeedMode"] := 2
-        settings["SpeedText"] := "ULTRA #2"
+        settings["SpeedMode"] := 2, settings["SpeedText"] := "ULTRA #2"
     } else if (settings["SpeedMode"] = 2) {
-        settings["SpeedMode"] := 3
-        settings["SpeedText"] := "HYPER #3"
+        settings["SpeedMode"] := 3, settings["SpeedText"] := "HYPER #3"
     } else if (settings["SpeedMode"] = 3) {
-        settings["SpeedMode"] := 4
-        settings["SpeedText"] := "INSANE #4"
+        settings["SpeedMode"] := 4, settings["SpeedText"] := "INSANE #4"
     } else {
-        settings["SpeedMode"] := 0
-        settings["SpeedText"] := "NORMAL #0"
+        settings["SpeedMode"] := 0, settings["SpeedText"] := "NORMAL #0"
     }
-
     ApplySpeed()
     guiControls["SpeedButton"].Text := settings["SpeedText"]
 }
 
-ToggleAutoAlignment() {
+ToggleAutoAlignment(*) {
     global settings, guiControls
     settings["AlignmentMode"] := settings["AlignmentMode"] ? 0 : 1
     settings["AlignmentText"] := settings["AlignmentMode"] ? "YES" : "NO"
-
     guiControls["AlignmentButton"].Text := settings["AlignmentText"]
 }
 
-ApplySettings() {
+ToggleAutoGui(*) {
+    global settings, guiControls
+    settings["AutoGuiMode"] := settings["AutoGuiMode"] ? 0 : 1
+    settings["AutoGuiText"] := settings["AutoGuiMode"] ? "YES" : "NO"
+    guiControls["AutoGuiButton"].Text := settings["AutoGuiText"]
+}
+
+ApplySettings(*) {
     global settings, guiControls
     value := guiControls["AmountEdit"].Text
     if value ~= "^\d+$"
@@ -100,13 +174,10 @@ ApplySettings() {
 
 ; --- Hotkeys ---
 F6::ExitApp
-
 F7::OpenGUI()
-
 F8:: {
     global toggle
     toggle := !toggle
-    if toggle {
+    if toggle
         SetTimer AutoBuy, 100
-    } 
 }
