@@ -74,6 +74,37 @@ COSMETICS: Top, Bottom
     FileAppend(defaultItems, "items.txt", "UTF-8")
 }
 
+CreateDefaultItems() {
+    global settings
+    global items := LoadItems()
+    
+    for category, itemList in items {
+        for _, itemText in itemList {
+            key := itemText
+            if !settings.Has(key)
+                settings[key] := 0
+        }
+    }
+}
+
+CreateDefaultSettings(){
+    global settings := Map()
+    settings["Amount"] := 3
+    settings["SpeedMode"] := 0
+    settings["SpeedText"] := "NORMAL"
+    settings["AlignmentMode"] := 1
+    settings["AlignmentText"] := "YES"
+    settings["AutoGuiMode"] := 1
+    settings["AutoGuiText"] := "YES"
+}
+
+CreateDefaultGUI(){
+    global GuiOpen := false
+    global toggle := false
+    global myGui
+    global guiControls := Map()
+}
+
 ApplySpeed() {
     global RandMin, RandMax, settings
     if (settings["SpeedMode"] = 0) {
