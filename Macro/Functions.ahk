@@ -68,10 +68,41 @@ CreateDefaultItemsFile() {
 SEEDS: Carrot, Strawberry, Blueberry, Orange Tulip, Tomato, Corn, Daffodil, Watermelon, Pumpkin, Apple, Bamboo, Coconut, Cactus, Dragon Fruit, Mango, Grape, Mushroom, Pepper, Cacao, Beanstalk, Ember Lily, Sugar Apple, Burning Bud, Giant Pinecone, Elder Strawberry, Romanesco
 GEARS: Watering can, Trading Ticket, Trowel, Recall Wrench, Basic Sprinkler, Advanced Sprinkler, Medium Toy, Medium Treat, Godly Sprinkler, Magnifying Glass, Master Sprinkler, Cleaning Spray, Cleansing Pet Shard, Favorite Tool, Harvest Tool, Friendship Pot, Grandmaster Sprinkler, Levelup Lollipop
 EGGS: Common, Uncommon, Rare, Legendary, Mythical, Bug
-COSMETICS: Top, Bottom
+COSMETICS: Buy All
 )"
 
     FileAppend(defaultItems, "items.txt", "UTF-8")
+}
+
+CreateDefaultItems() {
+    global settings
+    global items := LoadItems()
+    
+    for category, itemList in items {
+        for _, itemText in itemList {
+            key := itemText
+            if !settings.Has(key)
+                settings[key] := 0
+        }
+    }
+}
+
+CreateDefaultSettings(){
+    global settings := Map()
+    settings["Amount"] := 3
+    settings["SpeedMode"] := 0
+    settings["SpeedText"] := "NORMAL"
+    settings["AlignmentMode"] := 1
+    settings["AlignmentText"] := "YES"
+    settings["AutoGuiMode"] := 1
+    settings["AutoGuiText"] := "YES"
+}
+
+CreateDefaultGUI(){
+    global GuiOpen := false
+    global toggle := false
+    global myGui
+    global guiControls := Map()
 }
 
 ApplySpeed() {
@@ -130,7 +161,7 @@ SafeMoveRelative(xRatio, yRatio, steps := 20) {
         moveX := curX + Round((targetX - curX) * t)
         moveY := curY + Round((targetY - curY) * t)
         MouseMove moveX, moveY, 0
-        Sleep 20
+        Sleep 10 + Random(0,10)
     }
 
     MouseMove targetX, targetY

@@ -13,13 +13,15 @@ Use it at your own risk. It is not affiliated with or endorsed by Roblox Corpora
 
 ## Features
 
-- Automates purchases of SEEDS, GEARS, EGGS   
+- Automates purchases of SEEDS, GEARS, EGGS, COSMETICS   
 - Configurable number of bought items  
 - Adjustable speed (Normal / Fast / Hyper / Insane)  
 - Automatic handling of special case in the GEAR shop (16th item)  
 - Randomized input to simulate human-like behavior
+- Auto-open mode, gui lunches on macro startup
 - Auto alignment
-- Macro auto loads settings
+- Macro auto-loads settings
+- Select items to buy from the shop
 - Easy toggle ON/OFF  
 
 ---
@@ -48,7 +50,8 @@ A tooltip will indicate when the macro is active.
 - Your inventory must contain **the wrench** in the 1st slot and other slots from 2-0 (2,3,4,5,6,7,8,9,0) has to have an item.
 - Make sure that your "Camera Mode" in the settings is set to "Default (Classic)"
 - Turn ON the auto-alignment in the GUI
-- Example setup is shown in this video: (this sunday)
+- Make sure that every shop has closed items (only if u buy only one item from that shop)
+- Example setup is shown in this video: https://youtu.be/a8yF20GhpYY
 
 ---
 

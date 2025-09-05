@@ -6,37 +6,20 @@
 Persistent
 SendMode "Input"
 CoordMode "Mouse", "Screen"
-SetKeyDelay 50, 30
 
-; --- Ustawienia podstawowe ---
-global settings := Map()
-settings["Amount"] := 3
-settings["SpeedMode"] := 0
-settings["SpeedText"] := "NORMAL"
-settings["AlignmentMode"] := 1
-settings["AlignmentText"] := "YES"
-settings["AutoGuiMode"] := 1
-settings["AutoGuiText"] := "YES"
+CreateDefaultSettings()
 
 CreateDefaultItemsFile()
+
 global items := LoadItems()
 
-for cat, objList in items {
-    for _, itemText in objList {
-        key := itemText . "Mode"
-        if !settings.Has(key)
-            settings[key] := 0
-    }
-}
+CreateDefaultItems()
 
 global settings := LoadSettings()
+
 SaveSettings(settings)
 
-; --- GUI ---
-global GuiOpen := false
-global toggle := false
-global myGui
-global guiControls := Map()
+CreateDefaultGUI()
 
 if (settings["AutoGuiMode"] = 1)
     OpenGUI()
@@ -52,8 +35,8 @@ OpenGUI() {
 
     ; --- LEFT PANEL: Kategorie i przedmioty ---
     x := 20, y := 20
-    spacingX := 120, spacingY := 12
-    btnSize := 10
+    spacingX := 150, spacingY := 15  ; Zwiększono odstępy
+    btnSize := 15  ; Zwiększono rozmiar przycisku
     textWidth := 100  ; szerokość dla nazwy przedmiotu
 
     guiControls := Map()
@@ -62,7 +45,6 @@ OpenGUI() {
     ; Ustalona kolejność kategorii
     categories := ["SEEDS", "GEARS", "EGGS", "COSMETICS"]
 
-    idCounter := 1  ; unikalne ID dla każdego guzika
     for i, cat in categories {
         objList := items[cat]  ; pobierz przedmioty z mapy wg nazwy kategorii
         colX := x + spacingX*(i-1)
@@ -71,57 +53,58 @@ OpenGUI() {
         itemStartY := y + 25
         for j, itemText in objList {
             ; Dodaj nazwę przedmiotu
-            itemTextCtrl := myGui.Add("Text", Format("x{} y{} w{}", colX, itemStartY + spacingY*(j-1), textWidth), itemText)
+            itemY := itemStartY + spacingY*(j-1)
+            itemTextCtrl := myGui.Add("Text", Format("x{} y{} w{}", colX, itemY, textWidth), itemText)
             itemTextCtrl.SetFont("s7")
+            
             ; Dodaj przycisk obok nazwy
-            btn := myGui.Add("Button", Format("x{} y{} w{} h{}", colX + textWidth - 5, itemStartY + spacingY*(j-1), btnSize, btnSize), "")
-            key := itemText . "Mode"
+            btnX := colX + textWidth + 5  ; Pozycja X przycisku - obok tekstu
+            btn := myGui.Add("Button", Format("x{} y{} w{} h{}", btnX, itemY, btnSize, btnSize), "")
 
             ; ustaw początkowy stan guzika
-            btn.Text := settings[key] ? "X" : ""
+            btn.Text := settings[itemText] ? "X" : ""
 
             ; callback dla każdego guzika
-            btn.OnEvent("Click", ToggleItemMode.Bind(btn, key))
+            btn.OnEvent("Click", ToggleItemMode.Bind(btn, itemText))
 
             guiControls["ItemButtons"].Push(btn)
-            idCounter++
         }
     }
 
     ; --- RIGHT PANEL: ustawienia ---
-    labelX := 550, ctrlY := y
+    labelX := 620, ctrlY := y
     spacingRight := 50
 
     myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Amount to buy?:")
-    guiControls["AmountEdit"] := myGui.Add("Edit", Format("x{} y{} w20 Number", labelX, ctrlY + 20), settings["Amount"])
+    guiControls["AmountEdit"] := myGui.Add("Edit", Format("x{} y{} w40 Number", labelX, ctrlY + 20), settings["Amount"])
     ctrlY += spacingRight
 
     myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Speed:")
-    guiControls["SpeedButton"] := myGui.Add("Button", Format("x{} y{} w75", labelX, ctrlY + 20), settings["SpeedText"])
+    guiControls["SpeedButton"] := myGui.Add("Button", Format("x{} y{} w100", labelX, ctrlY + 20), settings["SpeedText"])
     guiControls["SpeedButton"].OnEvent("Click", ToggleSpeed)
     ctrlY += spacingRight
 
     myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Auto-alignment:")
-    guiControls["AlignmentButton"] := myGui.Add("Button", Format("x{} y{} w40", labelX, ctrlY + 20), settings["AlignmentText"])
+    guiControls["AlignmentButton"] := myGui.Add("Button", Format("x{} y{} w50", labelX, ctrlY + 20), settings["AlignmentText"])
     guiControls["AlignmentButton"].OnEvent("Click", ToggleAutoAlignment)
     ctrlY += spacingRight
 
     myGui.Add("Text", Format("x{} y{}", labelX, ctrlY), "Auto-open GUI:")
-    guiControls["AutoGuiButton"] := myGui.Add("Button", Format("x{} y{} w40", labelX, ctrlY + 20), settings["AutoGuiText"])
+    guiControls["AutoGuiButton"] := myGui.Add("Button", Format("x{} y{} w50", labelX, ctrlY + 20), settings["AutoGuiText"])
     guiControls["AutoGuiButton"].OnEvent("Click", ToggleAutoGui)
     ctrlY += spacingRight
 
-    SaveBtn := myGui.Add("Button", Format("x{} y{} w75", labelX, ctrlY), "Save")
+    SaveBtn := myGui.Add("Button", Format("x{} y{} w100", labelX, ctrlY), "Save")
     SaveBtn.OnEvent("Click", ApplySettings)
 
-    myGui.Show("w700 h400")
+    myGui.Show("w740 h450")  ; Zwiększono rozmiar GUI
     GuiOpen := true
 }
 
-ToggleItemMode(btn, key, *) {
+ToggleItemMode(btn, itemText, *) {
     global settings
-    settings[key] := !settings[key]  ; przełączamy 0 <-> 1
-    btn.Text := settings[key] ? "X" : ""
+    settings[itemText] := !settings[itemText]  ; przełączamy 0 <-> 1
+    btn.Text := settings[itemText] ? "X" : ""
 }
 
 CloseGUI(*) {
@@ -172,7 +155,7 @@ ApplySettings(*) {
     SaveSettings(settings)
 }
 
-; --- Hotkeys ---
+; --- HotitemTexts ---
 F6::ExitApp
 F7::OpenGUI()
 F8:: {
