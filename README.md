@@ -51,7 +51,7 @@ A tooltip will indicate when the macro is active.
 - Make sure that your "Camera Mode" in the settings is set to "Default (Classic)"
 - Turn ON the auto-alignment in the GUI
 - Make sure that every shop has closed items (only if u buy only one item from that shop)
-- Example setup is shown in this video: (this sunday)
+- Example setup is shown in this video: https://youtu.be/a8yF20GhpYY
 
 ---
 
