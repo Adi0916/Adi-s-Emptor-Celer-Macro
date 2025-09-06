@@ -1,40 +1,24 @@
-#Include Alignment.ahk
-#Include Autobuy.ahk
-#Include Functions.ahk
-
-#SingleInstance Force
-Persistent
-SendMode "Input"
-CoordMode "Mouse", "Screen"
-
-CreateDefaultSettings()
-
-CreateDefaultItemsFile()
-
-global items := LoadItems()
-
-CreateDefaultItems()
-
-global settings := LoadSettings()
-
-SaveSettings(settings)
-
-CreateDefaultGUI()
-
-if (settings["AutoGuiMode"] = 1)
-    OpenGUI()
-
-OpenGUI() {
+﻿OpenGUI() {
     global GuiOpen, settings, myGui, guiControls
     global items := LoadItems()
     if GuiOpen
         return
 
-    myGui := Gui("+AlwaysOnTop +ToolWindow +Border", "Script settings")
+    myGui := Gui("+AlwaysOnTop +ToolWindow +Border", "Emptor settings")
     myGui.OnEvent("Close", CloseGUI)
 
+    ; --- Categories ---
+    catX := 10, catY := 5, catWidth := 60
+    guiControls["GUIAutoBuy"] := myGui.Add("Button", Format("x{} y{} w{}", catX, catY, catWidth), "AutoBuy")
+    guiControls["GUIAutoBuy"].OnEvent("Click", (*) => OpenAutoBuyGUI()) ; Otwiera aktualne GUI
+    catX += catWidth + 5
+    guiControls["GUIAutoCraft"] := myGui.Add("Button", Format("x{} y{} w{}", catX, catY, catWidth), "AutoCraft")
+    guiControls["GUIAutoCraft"].OnEvent("Click", (*) => OpenAutoCraftGUI()) ; Zamknie to GUI i otworzy AutoCraft
+    catX += catWidth + 5
+    ;guiControls["GUIAutoSMTH"] := myGui.Add("Button", Format("x{} y{} w{}", catX, catY, catWidth), "Coming...")
+
     ; --- LEFT PANEL: Kategorie i przedmioty ---
-    x := 20, y := 20
+    x := 20, y := 35
     spacingX := 150, spacingY := 15  ; Zwiększono odstępy
     btnSize := 15  ; Zwiększono rozmiar przycisku
     textWidth := 100  ; szerokość dla nazwy przedmiotu
@@ -55,7 +39,7 @@ OpenGUI() {
             ; Dodaj nazwę przedmiotu
             itemY := itemStartY + spacingY*(j-1)
             itemTextCtrl := myGui.Add("Text", Format("x{} y{} w{}", colX, itemY, textWidth), itemText)
-            itemTextCtrl.SetFont("s7")
+            itemTextCtrl.SetFont("s8")
             
             ; Dodaj przycisk obok nazwy
             btnX := colX + textWidth + 5  ; Pozycja X przycisku - obok tekstu
@@ -97,70 +81,53 @@ OpenGUI() {
     SaveBtn := myGui.Add("Button", Format("x{} y{} w100", labelX, ctrlY), "Save")
     SaveBtn.OnEvent("Click", ApplySettings)
 
-    myGui.Show("w740 h450")  ; Zwiększono rozmiar GUI
+    myGui.Show("w740 h455")  ; Zwiększono rozmiar GUI
     GuiOpen := true
 }
 
-ToggleItemMode(btn, itemText, *) {
-    global settings
-    settings[itemText] := !settings[itemText]  ; przełączamy 0 <-> 1
-    btn.Text := settings[itemText] ? "X" : ""
+; Funkcja do otwierania GUI AutoBuy (aktualne GUI)
+OpenAutoBuyGUI() {
+    global GuiOpen
+    if !GuiOpen
+        OpenGUI()
+}
+
+; Funkcja do otwierania GUI AutoCraft
+OpenAutoCraftGUI() {
+    global GuiOpen, myGui
+    if GuiOpen {
+        myGui.Destroy()
+        GuiOpen := false
+    }
+    
+    ; Tutaj dodasz kod tworzący GUI AutoCraft
+    CreateAutoCraftGUI()
+}
+
+; Funkcja do tworzenia GUI AutoCraft (na razie pusta)
+CreateAutoCraftGUI() {
+    global GuiOpen, autoCraftGui
+    
+    autoCraftGui := Gui("+AlwaysOnTop +ToolWindow +Border", "AutoCraft Settings")
+    autoCraftGui.OnEvent("Close", (*) => (autoCraftGui.Destroy(), GuiOpen := false))
+    
+    ; Przycisk powrotu do głównego GUI
+    backBtn := autoCraftGui.Add("Button", "x10 y10 w60", "Back")
+    backBtn.OnEvent("Click", (*) => (
+        autoCraftGui.Destroy(),
+        GuiOpen := false,
+        OpenGUI()
+    ))
+    
+    ; --- TUTAJ DODASZ SWOJĄ IMPLEMENTACJĘ AUTOCRAFT ---
+    autoCraftGui.Add("Text", "x10 y50", "AutoCraft GUI - do implementacji")
+    
+    autoCraftGui.Show("w400 h300")
+    GuiOpen := true
 }
 
 CloseGUI(*) {
     global GuiOpen, myGui
     myGui.Destroy()
     GuiOpen := false
-}
-
-ToggleSpeed(*) {
-    global settings, guiControls
-    ; zmiana trybu prędkości
-    if (settings["SpeedMode"] = 0) {
-        settings["SpeedMode"] := 1, settings["SpeedText"] := "FAST #1"
-    } else if (settings["SpeedMode"] = 1) {
-        settings["SpeedMode"] := 2, settings["SpeedText"] := "ULTRA #2"
-    } else if (settings["SpeedMode"] = 2) {
-        settings["SpeedMode"] := 3, settings["SpeedText"] := "HYPER #3"
-    } else if (settings["SpeedMode"] = 3) {
-        settings["SpeedMode"] := 4, settings["SpeedText"] := "INSANE #4"
-    } else {
-        settings["SpeedMode"] := 0, settings["SpeedText"] := "NORMAL #0"
-    }
-    ApplySpeed()
-    guiControls["SpeedButton"].Text := settings["SpeedText"]
-}
-
-ToggleAutoAlignment(*) {
-    global settings, guiControls
-    settings["AlignmentMode"] := settings["AlignmentMode"] ? 0 : 1
-    settings["AlignmentText"] := settings["AlignmentMode"] ? "YES" : "NO"
-    guiControls["AlignmentButton"].Text := settings["AlignmentText"]
-}
-
-ToggleAutoGui(*) {
-    global settings, guiControls
-    settings["AutoGuiMode"] := settings["AutoGuiMode"] ? 0 : 1
-    settings["AutoGuiText"] := settings["AutoGuiMode"] ? "YES" : "NO"
-    guiControls["AutoGuiButton"].Text := settings["AutoGuiText"]
-}
-
-ApplySettings(*) {
-    global settings, guiControls
-    value := guiControls["AmountEdit"].Text
-    if value ~= "^\d+$"
-        settings["Amount"] := value
-    ToolTip "Settings applied."
-    SetTimer () => ToolTip(), -1500
-    SaveSettings(settings)
-}
-
-; --- HotitemTexts ---
-F6::ExitApp
-F7::OpenGUI()
-F8:: {
-    global toggle
-    toggle := !toggle
-    if toggle
-        SetTimer AutoBuy, 100
 }

@@ -1,4 +1,51 @@
-﻿SaveSettings(settings) {
+﻿ToggleItemMode(btn, itemText, *) {
+    global settings
+    settings[itemText] := !settings[itemText]  ; przełączamy 0 <-> 1
+    btn.Text := settings[itemText] ? "X" : ""
+}
+
+ToggleSpeed(*) {
+    global settings, guiControls
+    if (settings["SpeedMode"] = 0) {
+        settings["SpeedMode"] := 1, settings["SpeedText"] := "FAST #1"
+    } else if (settings["SpeedMode"] = 1) {
+        settings["SpeedMode"] := 2, settings["SpeedText"] := "ULTRA #2"
+    } else if (settings["SpeedMode"] = 2) {
+        settings["SpeedMode"] := 3, settings["SpeedText"] := "HYPER #3"
+    } else if (settings["SpeedMode"] = 3) {
+        settings["SpeedMode"] := 4, settings["SpeedText"] := "INSANE #4"
+    } else {
+        settings["SpeedMode"] := 0, settings["SpeedText"] := "NORMAL #0"
+    }
+    ApplySpeed()
+    guiControls["SpeedButton"].Text := settings["SpeedText"]
+}
+
+ToggleAutoAlignment(*) {
+    global settings, guiControls
+    settings["AlignmentMode"] := settings["AlignmentMode"] ? 0 : 1
+    settings["AlignmentText"] := settings["AlignmentMode"] ? "YES" : "NO"
+    guiControls["AlignmentButton"].Text := settings["AlignmentText"]
+}
+
+ToggleAutoGui(*) {
+    global settings, guiControls
+    settings["AutoGuiMode"] := settings["AutoGuiMode"] ? 0 : 1
+    settings["AutoGuiText"] := settings["AutoGuiMode"] ? "YES" : "NO"
+    guiControls["AutoGuiButton"].Text := settings["AutoGuiText"]
+}
+
+ApplySettings(*) {
+    global settings, guiControls
+    value := guiControls["AmountEdit"].Text
+    if value ~= "^\d+$"
+        settings["Amount"] := value
+    ToolTip "Settings applied."
+    SetTimer () => ToolTip(), -1500
+    SaveSettings(settings)
+}
+
+SaveSettings(settings) {
     file := FileOpen("settings.txt", "w", "UTF-8")  ; tryb w = nadpisanie
     for key, value in settings {
         file.WriteLine(key "=" value)
